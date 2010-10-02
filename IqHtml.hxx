@@ -32,7 +32,7 @@
 
 #include <stdlib.h>
 
-#include <qobject.h>
+#include <QObject>
 
 #include "Entry.hxx"
 #include "Note.hxx"
@@ -68,8 +68,8 @@ public:
 protected:
    QString _inFilename, _outFilename;
    bool _debug;
-   QValueList<Entry> _entryList;
-   QPtrList<Note> _noteList;
+   QList<Entry> _entryList;
+   QList<Note*> _noteList;
 
    int _getMaxNoteDepth();
    void _parseInput() throw (QString);

@@ -26,10 +26,10 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qglobal.h>
-#include <qstring.h>
+//#include <QGlobal>
+#include <QString>
 
 #include "PropertyXmlParser.hxx"
 
@@ -57,9 +57,9 @@ Property PropertyXmlParser::parse(const QDomElement& elmProperty) {
    Property property;
 
    if (elmProperty.isNull()) return property;
-   if (elmProperty.tagName().lower() != "property") return property;
+   if (elmProperty.tagName().toLower() != "property") return property;
 
-   if (getDebug()) qDebug( QString("PROPERTY: name(%1) type(%2)").arg(elmProperty.attribute("name")).arg(elmProperty.attribute("type")) );
+   if (getDebug()) qDebug( qPrintable( QString("PROPERTY: name(%1) type(%2)").arg(elmProperty.attribute("name")).arg(elmProperty.attribute("type")) ) );
 
    property.setName(elmProperty.attribute("name"));
    property.setType(elmProperty.attribute("type"));

@@ -32,8 +32,8 @@
 
 #include <stdlib.h>
 
-#include <qdom.h>
-#include <qobject.h>
+#include <QDomDocument>
+#include <QObject>
 
 #include "Entry.hxx"
 

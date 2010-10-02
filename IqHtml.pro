@@ -7,6 +7,8 @@ TEMPLATE =  app
 
 CONFIG   += qt warn_on console debug thread
 
+QT += xml
+
 SOURCES  += const.cxx \
             main.cxx \
             qsketch.cpp \

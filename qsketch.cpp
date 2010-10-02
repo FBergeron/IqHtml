@@ -17,16 +17,16 @@
 
 #include "qsketch.h"
 
-#include <qpainter.h>
-#include <qbrush.h>
-#include <qcolor.h>
-#include <qpopupmenu.h>
-#include <qcolordialog.h>
+#include <QPainter>
+#include <QBrush>
+#include <QColor>
+#include <QMenu>
+#include <QColorDialog>
 
 
 Stroke::Stroke()
 {
-    init(0, QWidget::black);
+    init(0, QColor().black());
 }
 
 Stroke::Stroke(uint width, QColor color)
@@ -41,13 +41,14 @@ void Stroke::init(uint width, QColor color)
     pen.setJoinStyle(Qt::RoundJoin);
     pen.setCapStyle(Qt::RoundCap);
 
-    points.setAutoDelete(true);
+    // The setAutoDelete() method is not available anymore in the API so comment the following line out. - FB
+    //points.setAutoDelete(true);
 }
 
 void Stroke::addPoint(const QPoint point)
 {
     QPoint *p = new QPoint(point);
-    points.append(p);
+    points << (*p);
 }
 
 void Stroke::paint(QPainter *p, bool onlyLastPoint)
@@ -57,32 +58,34 @@ void Stroke::paint(QPainter *p, bool onlyLastPoint)
 
     if (points.count() == 1 && !onlyLastPoint)
     {
-        QPoint *point = points.getFirst();
+        QPoint *point = &(points.first());
 
         p->drawEllipse(point->x() - int(pen.width()/2), point->y() - int(pen.width()/2), pen.width(), pen.width());
     }
     // paint all points
     else if (!onlyLastPoint)
     {
-        for (QPoint *point = points.first(); point = points.current(); points.next())
+        QPainterPath path;
+        for( QLinkedList<QPoint>::iterator it = points.begin(); it != points.end(); ++it )
         {
+            QPoint point = *it;
             // It's first point
-            if (point == points.getFirst())
-                p->moveTo(*point);
+            if (point == points.first())
+                path.moveTo( point );
 
-            p->lineTo(*point);
+            path.lineTo( point );
         }
     }
     // paint only last point
     else
     {
-        QPoint *last = points.getLast(), *prev = points.prev();
+        //QPoint last = points.last(), prev = points.prev();
 
-        if (prev)
-        {
-            p->moveTo(*prev);
-            p->lineTo(*last);
-        }
+        //if (prev)
+        //{
+        //    p->moveTo(prev);
+        //    p->lineTo(last);
+        //}
     }
 
     p->setPen(oldPen);
@@ -93,10 +96,12 @@ QString Stroke::serialize()
     QString r;
     r.sprintf("%d,%d,%d,%d", pen.width(), pen.color().red(), pen.color().green(), pen.color().blue());
 
-    for (QPoint *point = points.first(); point = points.current(); points.next())
+    //for (QPoint *point = points.first(); point = points.current(); points.next())
+    for( QLinkedList<QPoint>::iterator it = points.begin(); it != points.end(); ++it ) 
     {
+        QPoint point = *it;
         QString p;
-        r += p.sprintf(",%d,%d", point->x(), point->y());
+        r += p.sprintf(",%d,%d", point.x(), point.y());
     }
 
     return r;
@@ -180,7 +185,8 @@ void Stroke::unserialize(QString data)
 Strokes::Strokes()
 {
     currentStroke = 0;
-    strokes.setAutoDelete(true);
+    // The setAutoDelete() method is not available anymore in the API so comment the following line out. - FB
+    //strokes.setAutoDelete(true);
 }
 
 Strokes::Strokes(Strokes &strks)
@@ -189,7 +195,7 @@ Strokes::Strokes(Strokes &strks)
     for (Stroke *stroke = strks.first(); stroke = strks.current(); strks.next())
     {
         QString d = stroke->serialize();
-        qDebug("%s\n", d.latin1());
+        qDebug() << qPrintable( d ) << endl;
         addStroke(stroke->serialize());
     }
 }
@@ -214,16 +220,18 @@ void Strokes::addPoint(const QPoint point)
 
 void Strokes::closeStroke()
 {
-    if (currentStroke)
-        strokes.append(currentStroke);
+    //if (currentStroke)
+    //    strokes << *currentStroke;
 
     currentStroke = 0;
 }
 
 void Strokes::paint(QPainter *p)
 {
-    for (Stroke *stroke = strokes.first(); stroke = strokes.current(); strokes.next())
+    //for (Stroke *stroke = strokes.first(); stroke = strokes.current(); strokes.next())
+    for (QLinkedList<Stroke*>::iterator it = strokes.begin(); it != strokes.end(); ++it ) 
     {
+        Stroke* stroke = *it;
         stroke->paint(p);
     }
 
@@ -241,8 +249,10 @@ QString Strokes::serialize()
     QString r;
     uint i = 0;
 
-    for (Stroke *stroke = strokes.first(); stroke = strokes.current(); strokes.next(), i++)
+    //for (Stroke *stroke = strokes.first(); stroke = strokes.current(); strokes.next(), i++)
+    for( QLinkedList<Stroke*>::iterator it = strokes.begin(); it != strokes.end(); ++it ) 
     {
+        Stroke* stroke = *it;
         QString p;
 
         r += p.sprintf("stroke%d=\"", i) + stroke->serialize() + "\"\n";
@@ -256,6 +266,6 @@ void Strokes::addStroke(const QString &serialData)
     Stroke *stroke = new Stroke();
 
     stroke->unserialize(serialData);
-    strokes.append(stroke);
+    strokes << stroke;
 }
 

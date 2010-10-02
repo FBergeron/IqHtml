@@ -26,15 +26,15 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qdatetime.h>
-#include <qdir.h>
-#include <qglobal.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qregexp.h>
-#include <qstring.h>
+#include <QDateTime>
+#include <QDir>
+//#include <QGlobal>
+#include <QPainter>
+#include <QPixmap>
+#include <QRegExp>
+#include <QString>
 
 #include "const.hxx"
 #include "Environment.hxx"
@@ -140,9 +140,11 @@ void NoteHtmlWriter::_generateHtml(QTextStream& out, const Style& style, Note* n
          }
       }
 
-      Note* subNote = NULL;
-      QPtrList<Note> subNoteList(note->getSubNotes());
-      for (subNote=subNoteList.first(); subNote; subNote=subNoteList.next()) {
+      //Note* subNote = NULL;
+      QList<Note*> subNoteList(note->getSubNotes());
+      //for (subNote=subNoteList.first(); subNote; subNote=subNoteList.next()) {
+      for( QList<Note*>::iterator it = subNoteList.begin(); it != subNoteList.end(); ++it ) {
+          Note* subNote = *it;
          _generateHtml(out, style, subNote, level+1);
       }
    }
@@ -183,9 +185,11 @@ void NoteHtmlWriter::_generateHtml(QTextStream& out, const Style& style, Note* n
       out << "<ul>" << endl;
       out << "<br/>" << endl;
 
-      Note* subNote = NULL;
-      QPtrList<Note> subNoteList(note->getSubNotes());
-      for (subNote=subNoteList.first(); subNote; subNote=subNoteList.next()) {
+      //Note* subNote = NULL;
+      QList<Note*> subNoteList(note->getSubNotes());
+      //for (subNote=subNoteList.first(); subNote; subNote=subNoteList.next()) {
+      for( QList<Note*>::iterator it = subNoteList.begin(); it != subNoteList.end(); ++it ) {
+         Note* subNote = *it;
          out << "<li>" << endl;
          _generateHtml(out, style, subNote, level+1);
          out << "</li>" << endl;
@@ -204,7 +208,7 @@ QString NoteHtmlWriter::_generateSketch(const Style& style, Note* note) {
 
    QString basename, sketchFilename, propVal;
    basename = QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz");
-   sketchFilename = style.getSketchDir() + QDir::separator() + basename + "." + style.getSketchFormat().lower();
+   sketchFilename = style.getSketchDir() + QDir::separator() + basename + "." + style.getSketchFormat().toLower();
    for (size_t i=0; i<note->numPropertyValues(); i++) {
       propVal = note->getPropertyValue(i).getValue();
       strokes->addStroke(propVal);
@@ -213,14 +217,14 @@ QString NoteHtmlWriter::_generateSketch(const Style& style, Note* note) {
    pixmap.fill(Qt::white);
    QPainter painter(&pixmap);
    strokes->paint(&painter);
-   if (!pixmap.save(sketchFilename, style.getSketchFormat())) {
+   if (!pixmap.save(sketchFilename, style.getSketchFormat().toLatin1().data())) {
       throw QString("Could not save sketch to a file (%1).").arg(sketchFilename);
    }
 
    delete strokes;
 
-   QString relFilename(Environment::getRelativeDir(QDir(style.getSketchDir()), QDir(QFileInfo(_htmlFilePath).dirPath())));
-   relFilename += QDir::separator() + basename + "." + style.getSketchFormat().lower();
+   QString relFilename(Environment::getRelativeDir(QDir(style.getSketchDir()), QDir(QFileInfo(_htmlFilePath).path())));
+   relFilename += QDir::separator() + basename + "." + style.getSketchFormat().toLower();
    return relFilename;
 }
 

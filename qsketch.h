@@ -17,11 +17,12 @@
 #ifndef QSKETCH_H
 #define QSKETCH_H
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qlist.h>
-#include <qpen.h>
-#include <qlist.h>
+#include <QPixmap>
+#include <QWidget>
+#include <QLinkedList>
+#include <QList>
+#include <QPen>
+#include <QDebug>
 
 
 class Stroke
@@ -52,7 +53,7 @@ public:
 private:
     void init(uint width, QColor color);
 
-    QList<QPoint> points;
+    QLinkedList<QPoint> points;
     QPen pen;
 };
 
@@ -84,26 +85,29 @@ public:
     // closed stroke
     Stroke *getLastStroke()
     {
-        return strokes.getLast();
+        //return strokes.getLast();
+        return( strokes.last() );
     }
 
     Stroke *first()
     {
-        return strokes.first();
+        return( strokes.first() );
     }
     Stroke *next()
     {
-        return strokes.next();
+        //return( &strokes.next() );
+        return( 0 );
     }
     Stroke *current()
     {
-        return strokes.current();
+        //return(  &strokes.current() );
+        return( 0 );
     }
 
     void paint(QPainter *p);
 
 private:
-    QList<Stroke> strokes;
+    QLinkedList<Stroke*> strokes;
     Stroke *currentStroke;
 };
 

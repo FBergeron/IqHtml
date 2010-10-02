@@ -17,13 +17,14 @@
 // $Id$
 /////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 
-#include <qapplication.h>
-#include <qdir.h>
-#include <qfileinfo.h>
-#include <qstring.h>
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QString>
+#include <QDebug>
 
 #include "const.hxx"
 #include "Environment.hxx"
@@ -33,9 +34,10 @@
 #ifdef Q_WS_WIN
 #include <conio.h>
 #else
-#include <curses.h>
+#include <curses>
 #endif
 
+using namespace std;
 
 
 
@@ -70,7 +72,7 @@ int main(int argc, char **argv) {
          argMap = Environment::getArgMap(argc, argv, recognize);
       }
       catch (QString &exc) {
-         cerr << exc << endl;
+         cerr << qPrintable(exc) << endl;
          exit(EXIT_FAILURE);
       }
 
@@ -110,10 +112,10 @@ int main(int argc, char **argv) {
       }
       else {
          outFilename = inFilename;
-         QString ext("." + QFileInfo(inFilename).extension(true));
+         QString ext("." + QFileInfo(inFilename).suffix());
          outFilename = outFilename.left( outFilename.length() - ext.length());
          outFilename += ".html";
-         qDebug(outFilename);
+         qDebug() << outFilename;
       }
 
       QString listType("tabled");
@@ -134,20 +136,20 @@ int main(int argc, char **argv) {
          if (!dir.exists()) {
             dir = QDir::current();
             if (!dir.mkdir(sketchDir)) {
-               cerr << QString("Could not create the sketch directory (%1).")
-                     .arg(sketchDir) << endl;
+               cerr << qPrintable( QString("Could not create the sketch directory (%1).")
+                     .arg(sketchDir) ) << endl;
             }
          }
       }
 
       QString sketchFormat("PNG");
       if (argMap.find("-sketchFormat") != argMap.end()) {
-         sketchFormat = QString(argMap["-sketchFormat"]).upper();
+         sketchFormat = QString(argMap["-sketchFormat"]).toUpper();
          if (!validSketchFormats.contains(sketchFormat)) {
             displayHelp(argv[0], validSketchFormats);
-            cerr << QString("The specified sketch format (%1) is invalid.  "
+            cerr << qPrintable( QString("The specified sketch format (%1) is invalid.  "
                   "Valid sketch formats are: %2.").arg(sketchFormat)
-                  .arg(validSketchFormats.join(" ")) << endl;
+                  .arg(validSketchFormats.join(" "))) << endl;
          }
       }
 
@@ -169,7 +171,7 @@ int main(int argc, char **argv) {
 
    }
    catch(QString &exc) {
-      cerr << "Caught unexpected exception: " << exc << endl;
+      cerr << "Caught unexpected exception: " << qPrintable( exc ) << endl;
    }
    catch(...) {
       cerr << "Caught unexpected exception." << endl;
@@ -194,9 +196,9 @@ int main(int argc, char **argv) {
 /***************************************************************************/
 void displayHelp(const QString& progname, const QStringList& validSketchFormats) {
    cout << endl;
-   cout << AppConst::APPLICATION_TITLE << " - convert IQNotes XML to HTML" << endl;
+   cout << qPrintable( AppConst::APPLICATION_TITLE ) << qPrintable( QString( " - convert IQNotes XML to HTML" ) ) << endl;
    cout << endl;
-   cout << progname << " <infile>" << endl;
+   cout << qPrintable( progname ) << " <infile>" << endl;
    cout << endl;
    cout << " -cleanTitle            Removes the file extension from and converts" << endl;
    cout << "                        underscores to spaces in the input filename." << endl;
@@ -214,13 +216,13 @@ void displayHelp(const QString& progname, const QStringList& validSketchFormats)
    cout << "                        placed.  (If the \"-noSketches\" option is used, this" << endl;
    cout << "                        option is ignored.)" << endl;
    cout << " -sketchFormat <fmt>    Specifies the file format for sketch images." << endl;
-   cout << QString("                        Valid sketch formats are: %1.").arg(validSketchFormats.join(" ")) << endl;
+   cout << qPrintable( QString("                        Valid sketch formats are: %1.").arg(validSketchFormats.join(" ")) ) << endl;
    cout << "                        (If the \"-noSketches\" option is used, this option" << endl;
    cout << "                        is ignored.)" << endl;
    cout << " -version               Displays the version of this application." << endl;
    cout << endl;
-   cout << "For the latest version of " << AppConst::APPLICATION_TITLE << ", go to: " << endl;
-   cout << AppConst::APPLICATION_WEBSITE << endl;
+   cout << "For the latest version of " << qPrintable( AppConst::APPLICATION_TITLE ) << ", go to: " << endl;
+   cout << qPrintable( AppConst::APPLICATION_WEBSITE ) << endl;
    cout << endl;
 }
 

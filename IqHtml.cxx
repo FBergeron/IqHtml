@@ -26,20 +26,22 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qdom.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qglobal.h>
-#include <qregexp.h>
-#include <qstring.h>
+#include <QDomElement>
+#include <QFile>
+#include <QFileInfo>
+//#include <QGlobal>
+#include <QRegExp>
+#include <QString>
+#include <QTextStream>
 
 #include "EntryXmlParser.hxx"
 #include "IqHtml.hxx"
 #include "NoteHtmlWriter.hxx"
 #include "NoteXmlParser.hxx"
 
+using namespace std;
 
 /***************************************************************************/
 template <class T>
@@ -53,7 +55,8 @@ inline const T& max(const T& left, const T& right) {
 //! Constructor
 /***************************************************************************/
 IqHtml::IqHtml() : _debug(false) {
-   _noteList.setAutoDelete(true);
+   // The setAutoDelete() method is not available anymore in the API so comment the following line out. - FB
+   //_noteList.setAutoDelete(true);
 
    Entry textEntry("Text");
    Property textProperty("Text");
@@ -127,7 +130,7 @@ void IqHtml::process(const Style& style) throw (QString) {
 void IqHtml::_parseInput() throw (QString) {
    QDomDocument doc("inputfile");
    QFile file(_inFilename);
-   if (!file.open(IO_ReadOnly)) {
+   if (!file.open(QIODevice::ReadOnly)) {
       QString errMsg( QString("Could not open file (%1) for reading.").arg(_inFilename) );
       throw QString(errMsg);
    }
@@ -143,12 +146,12 @@ void IqHtml::_parseInput() throw (QString) {
    while( !node.isNull() ) {
       QDomElement elem = node.toElement();
       if( !elem.isNull() ) {
-         if (elem.tagName().lower() == "entries") {
+         if (elem.tagName().toLower() == "entries") {
             QDomNode innerNode = elem.firstChild();
             while (!innerNode.isNull() ) {
                QDomElement innerElem = innerNode.toElement();
                if (!innerElem.isNull()) {
-                  if (innerElem.tagName().lower() == "entry") {
+                  if (innerElem.tagName().toLower() == "entry") {
                      EntryXmlParser entryXmlParser;
                      entryXmlParser.setDebug(getDebug());
                      _entryList.push_back(entryXmlParser.parse(innerElem));
@@ -157,12 +160,12 @@ void IqHtml::_parseInput() throw (QString) {
                innerNode = innerNode.nextSibling();
             }
          }
-         if (elem.tagName().lower() == "notes") {
+         if (elem.tagName().toLower() == "notes") {
             QDomNode innerNode = elem.firstChild();
             while (!innerNode.isNull() ) {
                QDomElement innerElem = innerNode.toElement();
                if (!innerElem.isNull()) {
-                  if (innerElem.tagName().lower() == "note") {
+                  if (innerElem.tagName().toLower() == "note") {
                      NoteXmlParser noteXmlParser;
                      noteXmlParser.setDebug(getDebug());
                      _noteList.append(noteXmlParser.parse(innerElem, this));
@@ -185,7 +188,7 @@ void IqHtml::_generateOutput(const Style& style) throw (QString) {
 
    QFile file(_outFilename);
 
-   if (!file.open(IO_WriteOnly)) {
+   if (!file.open(QIODevice::WriteOnly)) {
       throw QString( QString("Could not open file (%1) for writing.").arg(_outFilename) );
    }
 
@@ -211,19 +214,24 @@ void IqHtml::_generateOutput(const Style& style) throw (QString) {
 
    NoteHtmlWriter noteHtmlWriter;
    noteHtmlWriter.setDebug(getDebug());
-   Note* note;
+   // Unused - FB
+   //Note* note;
    int maxDepth = _getMaxNoteDepth();
 
    if (style.getListViewType() == "tabled") {
       out << "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"5\">" << endl;
-      for (note=_noteList.first(); note; note=_noteList.next()) {
+      //for (note=_noteList.first(); note; note=_noteList.next()) {
+      for( QList<Note*>::iterator it = _noteList.begin(); it != _noteList.end(); ++it ) {
+         Note* note = *it;
          noteHtmlWriter.generateHtml(out, _outFilename, style, note, maxDepth);
       }
       out << "</table>" << endl;
    }
    else if (style.getListViewType() == "bulleted") {
       out << "<ul>" << endl;
-      for (note=_noteList.first(); note; note=_noteList.next()) {
+      //for (note=_noteList.first(); note; note=_noteList.next()) {
+      for( QList<Note*>::iterator it = _noteList.begin(); it != _noteList.end(); ++it ) {
+         Note* note = *it;
          out << "<li>" << endl;
          noteHtmlWriter.generateHtml(out, _outFilename, style, note, maxDepth);
          out << "</li>" << endl;
@@ -243,7 +251,7 @@ void IqHtml::_generateOutput(const Style& style) throw (QString) {
 //! Returns the entry by this name.
 /***************************************************************************/
 Entry IqHtml::getEntry(const QString& name) const throw (QString) {
-   QValueList<Entry>::const_iterator iter;
+   QList<Entry>::const_iterator iter;
    for (iter=_entryList.begin(); iter!=_entryList.end(); iter++) {
       if ((*iter).getName() == name) {
          return (*iter);
@@ -266,9 +274,11 @@ Entry IqHtml::getEntry(const QString& name) const throw (QString) {
 int IqHtml::_getMaxNoteDepth() {
    Note* note;
    int maxDepth=0, depth=0;
-   for (note=_noteList.first(); note; note=_noteList.next()) {
+   //for (note=_noteList.first(); note; note=_noteList.next()) {
+   for( QList<Note*>::iterator it = _noteList.begin(); it != _noteList.end(); ++it ) {
       depth = (note->getMaxChildDepth() + 1);
-      maxDepth = max(depth, maxDepth);
+      //maxDepth = max(depth, maxDepth);
+      maxDepth = ( depth > maxDepth ? depth : maxDepth ); 
    }
    return maxDepth;
 }

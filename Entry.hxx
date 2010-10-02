@@ -32,8 +32,8 @@
 
 #include <stdlib.h>
 
-#include <qobject.h>
-#include <qvaluevector.h>
+#include <QObject>
+#include <QList>
 
 #include "Property.hxx"
 
@@ -55,9 +55,9 @@ public:
    void setName(const QString&);
    QString getName() const;
 
-   void setProperties(const QValueVector<Property>&);
+   void setProperties(const QList<Property>&);
    void setProperty(const Property&, size_t=-1);
-   QValueVector<Property> getProperties() const;
+   QList<Property> getProperties() const;
    Property getProperty(size_t) const;
    size_t numProperties() const;
 
@@ -66,7 +66,7 @@ public:
 
 protected:
    QString _name;
-   QValueVector<Property> _properties;
+   QList<Property> _properties;
    bool _debug;
 }; // end Entry class
 

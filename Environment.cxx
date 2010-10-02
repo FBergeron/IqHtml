@@ -227,7 +227,7 @@ Environment::ArgMap Environment::getArgMap(int &argc, char **argv,
    } // end while
 
    for (mapIter=argInfo.begin(); mapIter!=argInfo.end(); mapIter++) {
-      if ( (mapIter.data() == ARG_AND_PARAM_REQUIRED) &&
+      if ( (mapIter.value() == ARG_AND_PARAM_REQUIRED) &&
             (argMap.find(mapIter.key()) == argMap.end() ) ) {
          argsNotFound.push_back(mapIter.key());
       }
@@ -280,15 +280,15 @@ Environment::ArgMap Environment::getArgMap(int &argc, char **argv,
  */
 /***************************************************************************/
 QString Environment::getRelativeDir(const QDir & in, const QDir & relativeTo) {
-   QDir inDir( in.absPath() );
-   QDir relDir( relativeTo.absPath() );
+   QDir inDir( in.absolutePath() );
+   QDir relDir( relativeTo.absolutePath() );
 
    if ( _getDrive( inDir ) != _getDrive( relDir ) ) {
       // drives don't match, so relative path not possible
-      return inDir.absPath() + "/";
+      return inDir.absolutePath() + "/";
    }
 
-   if ( _normalizePath(inDir.absPath()) == _normalizePath(relDir.absPath()) ) {
+   if ( _normalizePath(inDir.absolutePath()) == _normalizePath(relDir.absolutePath()) ) {
       // same dir
       return QString::null;
    }
@@ -299,7 +299,8 @@ QString Environment::getRelativeDir(const QDir & in, const QDir & relativeTo) {
    int checkDepth = inDirElements.count() < relDirElements.count() ? inDirElements.count() : relDirElements.count();
    int matchDepth = 0;
    for ( int i = 0; i < checkDepth; i++ ) {
-      if ( *inDirElements.at( i ) != *relDirElements.at( i ) )
+      //if ( *inDirElements.at( i ) != *relDirElements.at( i ) )
+      if ( inDirElements.at( i ) != relDirElements.at( i ) )
          break;
       else
          matchDepth = i + 1;
@@ -314,7 +315,8 @@ QString Environment::getRelativeDir(const QDir & in, const QDir & relativeTo) {
 
    // go down to in dir
    for ( unsigned int k = 0; k < inDirElements.count() - matchDepth; k++ ) {
-      ret += *inDirElements.at( matchDepth + k ) + "/";
+      //ret += *inDirElements.at( matchDepth + k ) + "/";
+      ret += inDirElements.at( matchDepth + k ) + "/";
    }
 
    return ret;
@@ -327,11 +329,11 @@ QString Environment::getRelativeDir(const QDir & in, const QDir & relativeTo) {
 */
 /***************************************************************************/
 QString Environment::_normalizePath(const QString& origPath) {
-   QString normalPath = QDir::cleanDirPath(origPath);
+   QString normalPath = QDir::cleanPath(origPath);
    normalPath = QDir::convertSeparators(normalPath);
 
 #ifdef Q_WS_WIN
-   normalPath = normalPath.upper();
+   normalPath = normalPath.toUpper();
 #endif
 
    return normalPath;
@@ -342,10 +344,10 @@ QString Environment::_normalizePath(const QString& origPath) {
 //! Return the drive letter of a path.
 /***************************************************************************/
 QString Environment::_getDrive(const QDir& dir) {
-   QString path(_normalizePath(dir.absPath()));
+   QString path(_normalizePath(dir.absolutePath()));
    QString drive("");
    if (path.at(1) == ':') {
-      drive = path.left(1).upper();
+      drive = path.left(1).toUpper();
    }
    return drive;
 }
@@ -355,9 +357,9 @@ QString Environment::_getDrive(const QDir& dir) {
 //! Splits a path into directory components.
 /***************************************************************************/
 QStringList Environment::_splitDir(const QDir& dir) {
-   QString path = _normalizePath(dir.absPath());
+   QString path = _normalizePath(dir.absolutePath());
    QStringList dirList;
-   dirList = QStringList::split(QDir::separator(), path);
+   dirList = path.split( QDir::separator() );
    return dirList;
 }
 

@@ -32,8 +32,8 @@
 
 #include <stdlib.h>
 
-#include <qobject.h>
-#include <qptrlist.h>
+#include <QObject>
+#include <QList>
 
 #include "Entry.hxx"
 #include "PropertyValue.hxx"
@@ -59,14 +59,14 @@ public:
    void setEntry(const Entry&);
    Entry getEntry() const;
 
-   void setPropertyValues(const QValueVector<PropertyValue>&);
+   void setPropertyValues(const QList<PropertyValue>&);
    void setPropertyValue(const PropertyValue&, size_t=-1);
-   QValueVector<PropertyValue> getPropertyValues() const;
+   QList<PropertyValue> getPropertyValues() const;
    PropertyValue getPropertyValue(size_t) const;
    size_t numPropertyValues() const;
 
    void addSubNote(Note*);
-   QPtrList<Note> getSubNotes() const;
+   QList<Note*> getSubNotes() const;
 
    int getMaxChildDepth();
 
@@ -76,8 +76,8 @@ public:
 protected:
    QString _name;
    Entry _entry;
-   QValueVector<PropertyValue> _propertyValues;
-   QPtrList<Note> _subNotes;
+   QList<PropertyValue> _propertyValues;
+   QList<Note*> _subNotes;
    bool _debug;
 }; // end Note class
 

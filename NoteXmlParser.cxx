@@ -26,10 +26,10 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qglobal.h>
-#include <qstring.h>
+//#include <QGlobal>
+#include <QString>
 
 #include "IqHtml.hxx"
 #include "NoteXmlParser.hxx"
@@ -61,9 +61,9 @@ Note* NoteXmlParser::parse(const QDomElement& elmNote, IqHtml* iqHtml) throw (QS
    Note *note = NULL;
 
    if (elmNote.isNull()) return note;
-   if (elmNote.tagName().lower() != "note") return note;
+   if (elmNote.tagName().toLower() != "note") return note;
 
-   if (getDebug()) qDebug( QString("NOTE: name(%1) type(%2)").arg(elmNote.attribute("name")).arg(elmNote.attribute("type")) );
+   if (getDebug()) qDebug( qPrintable( QString("NOTE: name(%1) type(%2)").arg(elmNote.attribute("name")).arg(elmNote.attribute("type")) ) );
 
    note = new Note(elmNote.attribute("name"));
 
@@ -88,7 +88,7 @@ Note* NoteXmlParser::parse(const QDomElement& elmNote, IqHtml* iqHtml) throw (QS
       value = elmNote.attribute(attrName);
       PropertyValue propVal(value);
       note->setPropertyValue(propVal, i);
-      if (getDebug()) qDebug( QString("   DATA: %1(%2)").arg(attrName).arg(elmNote.attribute(attrName)) );
+      if (getDebug()) qDebug( qPrintable( QString("   DATA: %1(%2)").arg(attrName).arg(elmNote.attribute(attrName)) ) );
       i++;
    }
 
@@ -96,7 +96,7 @@ Note* NoteXmlParser::parse(const QDomElement& elmNote, IqHtml* iqHtml) throw (QS
    while (!node.isNull()) {
       QDomElement elem = node.toElement();
       if (!elem.isNull()) {
-         if (elem.tagName().lower() == "note") {
+         if (elem.tagName().toLower() == "note") {
             NoteXmlParser noteXmlParser;
             noteXmlParser.setDebug(getDebug());
             note->addSubNote(noteXmlParser.parse(elem, iqHtml));

@@ -26,10 +26,10 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qglobal.h>
-#include <qstring.h>
+//#include <QGlobal>
+#include <QString>
 
 #include "Style.hxx"
 

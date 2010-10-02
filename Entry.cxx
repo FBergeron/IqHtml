@@ -26,13 +26,14 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qglobal.h>
-#include <qstring.h>
+//#include <QGlobal>
+#include <QString>
 
 #include "Entry.hxx"
 
+using namespace std;
 
 /***************************************************************************/
 //! Constructor
@@ -79,7 +80,7 @@ QString Entry::getName() const {
 /***************************************************************************/
 //! Sets the object properties.
 /***************************************************************************/
-void Entry::setProperties(const QValueVector<Property>& vecProp) {
+void Entry::setProperties(const QList<Property>& vecProp) {
    _properties = vecProp;
 }
 
@@ -88,7 +89,7 @@ void Entry::setProperties(const QValueVector<Property>& vecProp) {
 /***************************************************************************/
 //! Returns the object properties.
 /***************************************************************************/
-QValueVector<Property> Entry::getProperties() const {
+QList<Property> Entry::getProperties() const {
    return _properties;
 }
 
@@ -103,7 +104,8 @@ void Entry::setProperty(const Property& prop, size_t index) {
    }
    else {
       if (_properties.size() <= (index+1)) {
-         _properties.resize(index+1);
+         // The resize() method is not available anymore in the API so comment the following line out temporarily. - FB
+         //_properties.resize(index+1);
       }
       _properties[index] = prop;
    }

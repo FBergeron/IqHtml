@@ -26,10 +26,10 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qglobal.h>
-#include <qstring.h>
+//#include <qglobal.h>
+#include <QString>
 
 #include "Note.hxx"
 
@@ -62,7 +62,8 @@ Note::Note(const QString& name) : _name(name), _entry(NULL), _debug(false) {
 //! Destructor
 /***************************************************************************/
 Note::~Note() {
-   _subNotes.setAutoDelete(true);
+   // The setAutoDelete() method is not available anymore in the API so comment the following line out. - FB
+   //_subNotes.setAutoDelete(true);
 } // end destructor
 
 
@@ -106,7 +107,7 @@ Entry Note::getEntry() const {
 /***************************************************************************/
 //! Sets the object propertyValues.
 /***************************************************************************/
-void Note::setPropertyValues(const QValueVector<PropertyValue>& vecProp) {
+void Note::setPropertyValues(const QList<PropertyValue>& vecProp) {
    _propertyValues = vecProp;
 }
 
@@ -115,7 +116,7 @@ void Note::setPropertyValues(const QValueVector<PropertyValue>& vecProp) {
 /***************************************************************************/
 //! Returns the object propertyValues.
 /***************************************************************************/
-QValueVector<PropertyValue> Note::getPropertyValues() const {
+QList<PropertyValue> Note::getPropertyValues() const {
    return _propertyValues;
 }
 
@@ -130,7 +131,8 @@ void Note::setPropertyValue(const PropertyValue& prop, size_t index) {
    }
    else {
       if (_propertyValues.size() <= (index+1)) {
-         _propertyValues.resize(index+1);
+         // The resize() method is not available anymore in the API so comment the following line out. - FB
+         //_propertyValues.resize(index+1);
       }
       _propertyValues[index] = prop;
    }
@@ -179,7 +181,7 @@ void Note::addSubNote(Note* note) {
             values, so do not delete them) of this notes sub-notes.
 */
 /***************************************************************************/
-QPtrList<Note> Note::getSubNotes() const {
+QList<Note*> Note::getSubNotes() const {
    return _subNotes;
 }
 
@@ -192,9 +194,12 @@ QPtrList<Note> Note::getSubNotes() const {
 */
 /***************************************************************************/
 int Note::getMaxChildDepth() {
-   Note* note;
+   // Unused - FB
+   //Note* note;
    int maxDepth=0, depth=0;
-   for (note=_subNotes.first(); note; note=_subNotes.next()) {
+   //for (note=_subNotes.first(); note; note=_subNotes.next()) {
+   for (QList<Note*>::iterator it = _subNotes.begin(); it != _subNotes.end(); ++it ) {
+      Note* note = *it;
       depth = (note->getMaxChildDepth() + 1);
       maxDepth = max(depth, maxDepth);
    }

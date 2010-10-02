@@ -35,9 +35,9 @@
 #ifndef ENVIRONMENT_HXX
 #define ENVIRONMENT_HXX
 
-#include <qmap.h>
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QMap>
+#include <QString>
+#include <QStringList>
 
 /***************************************************************************/
 /*!

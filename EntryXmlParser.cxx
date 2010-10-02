@@ -26,10 +26,10 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qglobal.h>
-#include <qstring.h>
+//#include <qglobal.h>
+#include <QString>
 
 #include "EntryXmlParser.hxx"
 #include "PropertyXmlParser.hxx"
@@ -57,9 +57,9 @@ Entry EntryXmlParser::parse(const QDomElement& elmEntry) {
    Entry entry;
 
    if (elmEntry.isNull()) return entry;
-   if (elmEntry.tagName().lower() != "entry") return entry;
+   if (elmEntry.tagName().toLower() != "entry") return entry;
 
-   if (getDebug()) qDebug( QString("ENTRY: name(%1)").arg(elmEntry.attribute("name")) );
+   if (getDebug()) qDebug( qPrintable( QString("ENTRY: name(%1)").arg(elmEntry.attribute("name")) ) );
 
    entry.setName(elmEntry.attribute("name"));
 
@@ -67,7 +67,7 @@ Entry EntryXmlParser::parse(const QDomElement& elmEntry) {
    while (!node.isNull()) {
       QDomElement elem = node.toElement();
       if (!elem.isNull()) {
-         if (elem.tagName().lower() == "property") {
+         if (elem.tagName().toLower() == "property") {
             PropertyXmlParser propertyXmlParser;
             propertyXmlParser.setDebug(getDebug());
             entry.setProperty(propertyXmlParser.parse(elem));
@@ -76,7 +76,7 @@ Entry EntryXmlParser::parse(const QDomElement& elmEntry) {
       node = node.nextSibling();
    }
 
-   if (getDebug()) qDebug( QString("(Total properties: %1)").arg(entry.numProperties()) );
+   if (getDebug()) qDebug( qPrintable( QString("(Total properties: %1)").arg(entry.numProperties()) ) );
 
    return entry;
 }
