@@ -130,11 +130,10 @@ void Note::setPropertyValue(const PropertyValue& prop, size_t index) {
       _propertyValues.push_back(prop);
    }
    else {
-      if (_propertyValues.size() <= (index+1)) {
-         // The resize() method is not available anymore in the API so comment the following line out. - FB
-         //_propertyValues.resize(index+1);
-      }
-      _propertyValues[index] = prop;
+      if (_propertyValues.size() <= (index+1)) 
+        _propertyValues.append( prop );
+      else 
+        _propertyValues[index] = prop;
    }
 }
 
@@ -194,14 +193,11 @@ QList<Note*> Note::getSubNotes() const {
 */
 /***************************************************************************/
 int Note::getMaxChildDepth() {
-   // Unused - FB
-   //Note* note;
    int maxDepth=0, depth=0;
-   //for (note=_subNotes.first(); note; note=_subNotes.next()) {
    for (QList<Note*>::iterator it = _subNotes.begin(); it != _subNotes.end(); ++it ) {
       Note* note = *it;
       depth = (note->getMaxChildDepth() + 1);
-      maxDepth = max(depth, maxDepth);
+      maxDepth = ( depth > maxDepth ? depth : maxDepth );
    }
    return maxDepth;
 }

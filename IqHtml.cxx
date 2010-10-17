@@ -168,7 +168,8 @@ void IqHtml::_parseInput() throw (QString) {
                   if (innerElem.tagName().toLower() == "note") {
                      NoteXmlParser noteXmlParser;
                      noteXmlParser.setDebug(getDebug());
-                     _noteList.append(noteXmlParser.parse(innerElem, this));
+                     Note* parsedNote = noteXmlParser.parse(innerElem, this);
+                     _noteList.append(parsedNote);
                   }
                }
                innerNode = innerNode.nextSibling();
@@ -185,7 +186,6 @@ void IqHtml::_parseInput() throw (QString) {
 //! Generates HTML output.
 /***************************************************************************/
 void IqHtml::_generateOutput(const Style& style) throw (QString) {
-
    QFile file(_outFilename);
 
    if (!file.open(QIODevice::WriteOnly)) {
@@ -214,13 +214,10 @@ void IqHtml::_generateOutput(const Style& style) throw (QString) {
 
    NoteHtmlWriter noteHtmlWriter;
    noteHtmlWriter.setDebug(getDebug());
-   // Unused - FB
-   //Note* note;
    int maxDepth = _getMaxNoteDepth();
 
    if (style.getListViewType() == "tabled") {
       out << "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"5\">" << endl;
-      //for (note=_noteList.first(); note; note=_noteList.next()) {
       for( QList<Note*>::iterator it = _noteList.begin(); it != _noteList.end(); ++it ) {
          Note* note = *it;
          noteHtmlWriter.generateHtml(out, _outFilename, style, note, maxDepth);
@@ -229,7 +226,6 @@ void IqHtml::_generateOutput(const Style& style) throw (QString) {
    }
    else if (style.getListViewType() == "bulleted") {
       out << "<ul>" << endl;
-      //for (note=_noteList.first(); note; note=_noteList.next()) {
       for( QList<Note*>::iterator it = _noteList.begin(); it != _noteList.end(); ++it ) {
          Note* note = *it;
          out << "<li>" << endl;
@@ -272,12 +268,10 @@ Entry IqHtml::getEntry(const QString& name) const throw (QString) {
 */
 /***************************************************************************/
 int IqHtml::_getMaxNoteDepth() {
-   Note* note;
    int maxDepth=0, depth=0;
-   //for (note=_noteList.first(); note; note=_noteList.next()) {
    for( QList<Note*>::iterator it = _noteList.begin(); it != _noteList.end(); ++it ) {
+      Note* note = *it;
       depth = (note->getMaxChildDepth() + 1);
-      //maxDepth = max(depth, maxDepth);
       maxDepth = ( depth > maxDepth ? depth : maxDepth ); 
    }
    return maxDepth;

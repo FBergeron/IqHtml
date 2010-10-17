@@ -103,11 +103,10 @@ void Entry::setProperty(const Property& prop, size_t index) {
       _properties.push_back(prop);
    }
    else {
-      if (_properties.size() <= (index+1)) {
-         // The resize() method is not available anymore in the API so comment the following line out temporarily. - FB
-         //_properties.resize(index+1);
-      }
-      _properties[index] = prop;
+      if (_properties.size() <= (index+1))
+          _properties.append( prop );
+      else
+          _properties[index] = prop;
    }
 }
 
