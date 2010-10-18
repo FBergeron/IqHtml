@@ -60,7 +60,7 @@ const int AppConst::REVISION_NUMBER  = 1;
 */
 /***************************************************************************/
 //@{
-const int AppConst::SKETCH_WIDTH = 238;
-const int AppConst::SKETCH_HEIGHT = 245;
+const int AppConst::SKETCH_WIDTH = 640; // Original value: 238;
+const int AppConst::SKETCH_HEIGHT = 480; // Original value: 245;
 //@}
 
