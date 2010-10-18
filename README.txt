@@ -1,3 +1,9 @@
+This is a fork of the IqHtml utility program.  
+The original source code has been ported to Qt-4.4.1 so that it now runs on Windows.
+The default sketch size has been resized from 238x245 to 640x480 for convenience.
+
+What follows is the original README file:
+
  
 :::::::::: IqHtml - convert IQNotes' XML to HTML ::::::::::
     Copyright (C) 2003 James Bernsen <james@bernsen.us>
