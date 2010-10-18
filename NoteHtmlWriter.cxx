@@ -30,7 +30,6 @@
 
 #include <QDateTime>
 #include <QDir>
-//#include <QGlobal>
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>

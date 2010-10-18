@@ -28,7 +28,6 @@
 
 #include <iostream>
 
-//#include <qglobal.h>
 #include <QString>
 
 #include "Note.hxx"

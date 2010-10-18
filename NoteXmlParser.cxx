@@ -28,7 +28,6 @@
 
 #include <iostream>
 
-//#include <QGlobal>
 #include <QString>
 
 #include "IqHtml.hxx"

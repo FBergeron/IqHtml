@@ -26,10 +26,9 @@
 */
 /***************************************************************************/
 
-#include <iostream.h>
+#include <iostream>
 
-#include <qglobal.h>
-#include <qstring.h>
+#include <QString>
 
 #include "PropertyValue.hxx"
 

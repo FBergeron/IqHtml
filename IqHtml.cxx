@@ -31,7 +31,6 @@
 #include <QDomElement>
 #include <QFile>
 #include <QFileInfo>
-//#include <QGlobal>
 #include <QRegExp>
 #include <QString>
 #include <QTextStream>

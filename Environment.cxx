@@ -34,8 +34,6 @@
 
 #include <stdlib.h>
 
-#include <qglobal.h>
-
 #ifdef Q_WS_WIN
    #include <windows.h>
    #include <winbase.h>
@@ -44,18 +42,18 @@
    #include <LMCONS.H>
    #include <process.h>
 #else
-   #include <netdb.h>
-   #include <unistd.h>
-   #include <pwd.h>
-   #include <sys/types.h>
-   #include <sys/wait.h>
-   #include <sys/utsname.h>
-   #include <errno.h>
+   //#include <netdb.h>
+   //#include <unistd.h>
+   //#include <pwd.h>
+   //#include <sys/types.h>
+   //#include <sys/wait.h>
+   //#include <sys/utsname.h>
+   //#include <errno.h>
 #endif
 
-#include <qdir.h>
-#include <qfileinfo.h>
-#include <qregexp.h>
+#include <QDir>
+#include <QFileInfo>
+#include <QRegExp>
 
 #include "Environment.hxx"
 
