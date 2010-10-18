@@ -66,7 +66,7 @@ void Stroke::paint(QPainter *p, bool onlyLastPoint)
     else if (!onlyLastPoint)
     {
         QPainterPath path;
-        for( QLinkedList<QPoint>::iterator it = points.begin(); it != points.end(); ++it )
+        for( QList<QPoint>::iterator it = points.begin(); it != points.end(); ++it )
         {
             QPoint point = *it;
             // It's first point
@@ -75,17 +75,16 @@ void Stroke::paint(QPainter *p, bool onlyLastPoint)
 
             path.lineTo( point );
         }
+        p->drawPath( path );
     }
     // paint only last point
     else
     {
-        //QPoint last = points.last(), prev = points.prev();
-
-        //if (prev)
-        //{
-        //    p->moveTo(prev);
-        //    p->lineTo(last);
-        //}
+        if( points.size() >= 2 ) {
+            QPoint last = points.at( points.size() - 1 );
+            QPoint prev = points.at( points.size() - 2 );
+            p->drawLine( prev, last );
+        }
     }
 
     p->setPen(oldPen);
@@ -96,8 +95,7 @@ QString Stroke::serialize()
     QString r;
     r.sprintf("%d,%d,%d,%d", pen.width(), pen.color().red(), pen.color().green(), pen.color().blue());
 
-    //for (QPoint *point = points.first(); point = points.current(); points.next())
-    for( QLinkedList<QPoint>::iterator it = points.begin(); it != points.end(); ++it ) 
+    for( QList<QPoint>::iterator it = points.begin(); it != points.end(); ++it ) 
     {
         QPoint point = *it;
         QString p;
@@ -192,8 +190,8 @@ Strokes::Strokes()
 Strokes::Strokes(Strokes &strks)
 {
     strokes.clear();
-    for (Stroke *stroke = strks.first(); stroke = strks.current(); strks.next())
-    {
+    for (QList<Stroke*>::ConstIterator it = strks.constBegin(); it != strks.constEnd(); it++ ) {
+        Stroke* stroke = *it;
         QString d = stroke->serialize();
         qDebug() << qPrintable( d ) << endl;
         addStroke(stroke->serialize());
@@ -228,8 +226,7 @@ void Strokes::closeStroke()
 
 void Strokes::paint(QPainter *p)
 {
-    //for (Stroke *stroke = strokes.first(); stroke = strokes.current(); strokes.next())
-    for (QLinkedList<Stroke*>::iterator it = strokes.begin(); it != strokes.end(); ++it ) 
+    for (QList<Stroke*>::iterator it = strokes.begin(); it != strokes.end(); ++it ) 
     {
         Stroke* stroke = *it;
         stroke->paint(p);
@@ -249,8 +246,7 @@ QString Strokes::serialize()
     QString r;
     uint i = 0;
 
-    //for (Stroke *stroke = strokes.first(); stroke = strokes.current(); strokes.next(), i++)
-    for( QLinkedList<Stroke*>::iterator it = strokes.begin(); it != strokes.end(); ++it ) 
+    for( QList<Stroke*>::iterator it = strokes.begin(); it != strokes.end(); ++it ) 
     {
         Stroke* stroke = *it;
         QString p;

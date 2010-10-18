@@ -1,4 +1,2 @@
-Redo the implementation of Stroke::next() and Stroke::current().  I think I must use an iterator to find the next and current element.
-The QLinkedList in qsketch.* are most probably buggy.  Fix that.
-I have commented out the final else in Stroke::paint().  Must make it work. 
+Review all the files and check differences with original version.
 Try to remove warnings.

@@ -19,11 +19,9 @@
 
 #include <QPixmap>
 #include <QWidget>
-#include <QLinkedList>
 #include <QList>
 #include <QPen>
 #include <QDebug>
-
 
 class Stroke
 {
@@ -53,7 +51,7 @@ public:
 private:
     void init(uint width, QColor color);
 
-    QLinkedList<QPoint> points;
+    QList<QPoint> points;
     QPen pen;
 };
 
@@ -85,29 +83,21 @@ public:
     // closed stroke
     Stroke *getLastStroke()
     {
-        //return strokes.getLast();
         return( strokes.last() );
     }
 
-    Stroke *first()
-    {
-        return( strokes.first() );
+    QList<Stroke*>::ConstIterator constBegin() const {
+        return( strokes.constBegin() );
     }
-    Stroke *next()
-    {
-        //return( &strokes.next() );
-        return( 0 );
-    }
-    Stroke *current()
-    {
-        //return(  &strokes.current() );
-        return( 0 );
+
+    QList<Stroke*>::ConstIterator constEnd() const {
+        return( strokes.constEnd() );
     }
 
     void paint(QPainter *p);
 
 private:
-    QLinkedList<Stroke*> strokes;
+    QList<Stroke*> strokes;
     Stroke *currentStroke;
 };
 
